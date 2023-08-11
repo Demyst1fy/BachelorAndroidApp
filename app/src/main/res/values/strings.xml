@@ -1,0 +1,12 @@
+<resources>
+    <string name="app_name">Bachelor Android App</string>
+    <string name="general_error">An error occurred. Please try again later.</string>
+    <string name="no_features">No features found</string>
+    <string name="malformed_url">URL is malformed</string>
+    <string name="io_exception">I/O exception.</string>
+    <string name="temp">%.2f °C</string>
+    <string name="humidity">%.0f %%</string>
+    <string name="windSpeed">%.2f km/h</string>
+    <string name="pressure">%.0f hPa</string>
+    <string name="apikey">your_api_key</string>
+</resources>

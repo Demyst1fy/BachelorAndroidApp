@@ -1,0 +1,121 @@
+package com.example.bachelorandroid.utils
+
+import android.content.Context
+import android.util.Log
+import com.example.bachelorandroid.data.models.LocationItem
+import com.example.bachelorandroid.MainActivity
+import com.example.bachelorandroid.R
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
+import org.json.JSONObject
+import java.io.IOException
+import java.net.HttpURLConnection
+import java.net.MalformedURLException
+import java.net.URL
+
+object DownloadUtil {
+    private fun getResponseFromHttpURL(urlString : String) : String? {
+        val con : HttpURLConnection? = null
+
+
+        try {
+            val url = URL(urlString)
+            return url.readText()
+
+        } catch (ex : MalformedURLException) {
+            Log.e(MainActivity.LOG_TAG, "URL is malformed", ex)
+            return null
+
+        } catch (ex : IOException) {
+            Log.e(MainActivity.LOG_TAG, "I/O exception.", ex)
+            return null
+
+        } catch (ex : Exception) {
+            Log.e(MainActivity.LOG_TAG, "An error occurred. Please try again later.", ex)
+            return null
+
+        } finally {
+            con?.disconnect()
+        }
+    }
+
+    suspend fun getCurrentDataFromLatLon(context: Context, latitude : Double, longitude : Double) : LocationItem? {
+        val response = withContext(Dispatchers.IO) {
+            Log.e("APIKEYYO", R.string.apikey.toString())
+            getResponseFromHttpURL(
+                "https://api.openweathermap.org/data/2.5/weather?lat=${latitude}" +
+                        "&lon=${longitude}&lang=de&units=metric&" +
+                        "appid=${context.getString(R.string.apikey)}"
+            )
+        }
+
+        return if (response == null || JSONObject(response).optInt("cod") != 200) {
+            null
+        } else {
+            val jsonObject = JSONObject(response)
+
+            val id = jsonObject.optInt("id")
+            val lon = jsonObject.optJSONObject("coord")?.optDouble("lon")
+            val lat = jsonObject.optJSONObject("coord")?.optDouble("lat")
+            val name = jsonObject.optString("name")
+            val temp = jsonObject.optJSONObject("main")?.optDouble("temp")
+            val humidity = jsonObject.optJSONObject("main")?.optDouble("humidity")
+            val windSpeed = jsonObject.optJSONObject("wind")?.optDouble("speed")
+            val pressure = jsonObject.optJSONObject("main")?.optDouble("pressure")
+            val weatherDescription = jsonObject.optJSONArray("weather")?.getJSONObject(0)?.optString("description")
+            val icon = jsonObject.optJSONArray("weather")?.getJSONObject(0)?.optString("icon")
+
+            LocationItem(
+                id = id,
+                lon = lon,
+                lat = lat,
+                name = name,
+                temp = temp,
+                humidity = humidity,
+                windSpeed = windSpeed,
+                pressure = pressure,
+                weatherDescription = weatherDescription,
+                icon = icon
+            )
+        }
+    }
+
+    suspend fun getCurrentDataFromMic(context: Context, locationFromMic : String) : LocationItem? {
+        val response = withContext(Dispatchers.IO) {
+            getResponseFromHttpURL(
+                "https://api.openweathermap.org/data/2.5/weather?q=${locationFromMic}" +
+                        "&lang=de&units=metric&appid=${context.getString(R.string.apikey)}"
+            )
+        }
+
+        return if (response == null || JSONObject(response).optInt("cod") != 200) {
+            null
+        } else {
+            val jsonObject = JSONObject(response)
+
+            val id = jsonObject.optInt("id")
+            val lon = jsonObject.optJSONObject("coord")?.optDouble("lon")
+            val lat = jsonObject.optJSONObject("coord")?.optDouble("lat")
+            val name = jsonObject.optString("name")
+            val temp = jsonObject.optJSONObject("main")?.optDouble("temp")
+            val humidity = jsonObject.optJSONObject("main")?.optDouble("humidity")
+            val windSpeed = jsonObject.optJSONObject("wind")?.optDouble("speed")
+            val pressure = jsonObject.optJSONObject("main")?.optDouble("pressure")
+            val weatherDescription = jsonObject.optJSONArray("weather")?.getJSONObject(0)?.optString("description")
+            val icon = jsonObject.optJSONArray("weather")?.getJSONObject(0)?.optString("icon")
+
+            LocationItem(
+                id = id,
+                lon = lon,
+                lat = lat,
+                name = name,
+                temp = temp,
+                humidity = humidity,
+                windSpeed = windSpeed,
+                pressure = pressure,
+                weatherDescription = weatherDescription,
+                icon = icon
+            )
+        }
+    }
+}
