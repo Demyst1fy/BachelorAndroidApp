@@ -207,7 +207,7 @@ class MainActivity : AppCompatActivity(), LocationListener {
         val workManager = WorkManager.getInstance(this)
         val periodicReloadDataWorkRequest = PeriodicWorkRequest.Builder(
             PeriodicNotificationWorker::class.java,
-            1, TimeUnit.HOURS)
+            15, TimeUnit.MINUTES)
             .setInputData(data)
             .setInitialDelay(1, TimeUnit.HOURS)
             .setConstraints(
