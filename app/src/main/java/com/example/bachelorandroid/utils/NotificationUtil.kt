@@ -8,7 +8,7 @@ import android.content.Intent
 import android.os.Build
 import androidx.core.app.NotificationCompat
 import androidx.core.graphics.drawable.IconCompat
-import com.example.bachelorandroid.data.models.LocationItem
+import com.example.bachelorandroid.data.LocationItem
 import com.example.bachelorandroid.MainActivity
 import com.google.firebase.perf.FirebasePerformance
 import com.google.firebase.perf.metrics.Trace
@@ -29,10 +29,10 @@ object NotificationUtil {
     }
 
     fun createNotification(context : Context, locationItem: LocationItem?) {
-        val itemId = locationItem!!.id
-
-        val pushNotificationTrace: Trace = FirebasePerformance.getInstance().newTrace("push_notification")
+        val pushNotificationTrace: Trace = FirebasePerformance.getInstance().newTrace("create_push_notification")
         pushNotificationTrace.start()
+        
+        val itemId = locationItem!!.id
 
         val bitmapImage = ImageUtil.bitmapFromUrl(
             "https://openweathermap.org/img/wn/" +
@@ -60,6 +60,7 @@ object NotificationUtil {
                 NotificationManager
 
         notificationManager.notify(itemId, notificationBuilder.build())
+
         pushNotificationTrace.stop()
     }
 }

@@ -6,7 +6,7 @@ import android.widget.TextView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.example.bachelorandroid.R
-import com.example.bachelorandroid.data.models.LocationItem
+import com.example.bachelorandroid.data.LocationItem
 import org.osmdroid.views.MapView
 import org.osmdroid.views.overlay.Marker
 import org.osmdroid.views.overlay.infowindow.InfoWindow

@@ -108,9 +108,6 @@ class MainActivity : AppCompatActivity(), LocationListener {
 
         // Load the latest image on app startup
 
-        val getImageFromStorageTrace: Trace = FirebasePerformance.getInstance().newTrace("get_image_from_storage")
-        getImageFromStorageTrace.start()
-
         val latestImageUri = fileHelper.getLatestImageUri()
         if (latestImageUri != null) {
             Glide.with(this)
@@ -118,8 +115,6 @@ class MainActivity : AppCompatActivity(), LocationListener {
                 .apply(RequestOptions.overrideOf(160, 120))
                 .into(photoFromCamera)
         }
-
-        getImageFromStorageTrace.stop()
 
         // Check location permission
         checkAndRequestLocationPermission()
@@ -165,12 +160,7 @@ class MainActivity : AppCompatActivity(), LocationListener {
         newMarker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM)
 
         lifecycleScope.launch {
-            val apiCallCurrentLocationTrace = FirebasePerformance.getInstance().newTrace("call_openweather_api_via_current_location");
-            apiCallCurrentLocationTrace.start();
-
             val current = DownloadUtil.getCurrentDataFromLatLon(this@MainActivity, geoPoint.latitude, geoPoint.longitude)
-
-            apiCallCurrentLocationTrace.stop();
 
             newMarker.infoWindow = CustomMarkerInfoWindow(R.layout.custom_marker_info_window, mapView, current, this@MainActivity)
 
@@ -286,7 +276,7 @@ class MainActivity : AppCompatActivity(), LocationListener {
                 Manifest.permission.ACCESS_FINE_LOCATION
             ) == PackageManager.PERMISSION_GRANTED
         ) {
-            val geoLocationTrace: Trace = FirebasePerformance.getInstance().newTrace("geo_location")
+            val geoLocationTrace: Trace = FirebasePerformance.getInstance().newTrace("get_geolocation")
             geoLocationTrace.start()
 
             // Request location updates
@@ -332,16 +322,11 @@ class MainActivity : AppCompatActivity(), LocationListener {
                 lifecycleScope.launch {
                     // Add a new marker at the clicked position
 
-                    val apiCallClickedPositionTrace: Trace = FirebasePerformance.getInstance().newTrace("call_openweather_api_via_clicked_position");
-                    apiCallClickedPositionTrace.start()
-
                     val current = DownloadUtil.getCurrentDataFromLatLon(
                         this@MainActivity,
                         clickedPosition.latitude,
                         clickedPosition.longitude
                     )
-
-                    apiCallClickedPositionTrace.stop()
 
                     newClickedMarker.infoWindow = CustomMarkerInfoWindow(R.layout.custom_marker_info_window, mapView, current, this@MainActivity)
                     newClickedMarker.showInfoWindow();

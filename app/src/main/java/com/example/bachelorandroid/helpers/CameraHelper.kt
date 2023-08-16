@@ -1,10 +1,7 @@
 package com.example.bachelorandroid.helpers
 
 import android.app.Activity
-import android.content.Context
 import android.content.Intent
-import android.net.Uri
-import android.os.Environment
 import android.provider.MediaStore
 import android.widget.ImageView
 import androidx.activity.result.ActivityResultLauncher
@@ -32,7 +29,7 @@ class CameraHelper(private val activity: FragmentActivity, private var fileHelpe
 
         takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI)
 
-        val cameraActivationTrace: Trace = FirebasePerformance.getInstance().newTrace("camera_activation")
+        val cameraActivationTrace: Trace = FirebasePerformance.getInstance().newTrace("activate_camera")
         cameraActivationTrace.start()
 
         cameraLauncher.launch(takePictureIntent)
@@ -43,18 +40,13 @@ class CameraHelper(private val activity: FragmentActivity, private var fileHelpe
     private val cameraLauncher: ActivityResultLauncher<Intent> =
         activity.registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
             if (result.resultCode == Activity.RESULT_OK) {
-                val saveImageInStorageTrace: Trace = FirebasePerformance.getInstance().newTrace("save_image_in_storage")
-                saveImageInStorageTrace.start()
-
-                val latestImageUri = fileHelper.saveCapturedImage(photoFile)
+                val latestImageUri = fileHelper.setCapturedImage(photoFile)
                 if (latestImageUri != null) {
                     Glide.with(activity)
                         .load(latestImageUri)
                         .apply(RequestOptions.overrideOf(160, 120))
                         .into(photoFromCamera)
                 }
-
-                saveImageInStorageTrace.stop()
             }
         }
 }

@@ -2,9 +2,10 @@ package com.example.bachelorandroid.utils
 
 import android.content.Context
 import android.util.Log
-import com.example.bachelorandroid.data.models.LocationItem
+import com.example.bachelorandroid.data.LocationItem
 import com.example.bachelorandroid.MainActivity
 import com.example.bachelorandroid.R
+import com.google.firebase.perf.FirebasePerformance
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.json.JSONObject
@@ -40,14 +41,18 @@ object DownloadUtil {
     }
 
     suspend fun getCurrentDataFromLatLon(context: Context, latitude : Double, longitude : Double) : LocationItem? {
+        val apiCallLocationLatLonTrace = FirebasePerformance.getInstance().newTrace("call_openweather_api_via_location_latlon");
+        apiCallLocationLatLonTrace.start();
+
         val response = withContext(Dispatchers.IO) {
-            Log.e("APIKEYYO", R.string.apikey.toString())
             getResponseFromHttpURL(
                 "https://api.openweathermap.org/data/2.5/weather?lat=${latitude}" +
                         "&lon=${longitude}&lang=de&units=metric&" +
                         "appid=${context.getString(R.string.apikey)}"
             )
         }
+
+        apiCallLocationLatLonTrace.stop();
 
         return if (response == null || JSONObject(response).optInt("cod") != 200) {
             null
@@ -81,12 +86,18 @@ object DownloadUtil {
     }
 
     suspend fun getCurrentDataFromMic(context: Context, locationFromMic : String) : LocationItem? {
+        val apiCallLocationNameTrace = FirebasePerformance.getInstance().newTrace("call_openweather_api_via_location_name");
+        apiCallLocationNameTrace.start();
+
+
         val response = withContext(Dispatchers.IO) {
             getResponseFromHttpURL(
                 "https://api.openweathermap.org/data/2.5/weather?q=${locationFromMic}" +
                         "&lang=de&units=metric&appid=${context.getString(R.string.apikey)}"
             )
         }
+
+        apiCallLocationNameTrace.stop();
 
         return if (response == null || JSONObject(response).optInt("cod") != 200) {
             null

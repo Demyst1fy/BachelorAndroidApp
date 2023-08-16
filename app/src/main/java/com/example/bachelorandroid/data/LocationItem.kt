@@ -1,4 +1,4 @@
-package com.example.bachelorandroid.data.models
+package com.example.bachelorandroid.data
 
 data class LocationItem(
     var id : Int,

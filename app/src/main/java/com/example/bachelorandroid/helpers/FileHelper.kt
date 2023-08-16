@@ -4,7 +4,6 @@ import android.content.Context
 import android.net.Uri
 import android.os.Environment
 import androidx.core.content.FileProvider
-import com.example.bachelorandroid.MainActivity
 import com.google.firebase.perf.FirebasePerformance
 import com.google.firebase.perf.metrics.Trace
 import java.io.File
@@ -15,21 +14,33 @@ class FileHelper(private val context: Context) {
         return File.createTempFile("image", ".jpg", storageDir)
     }
 
-    fun saveCapturedImage(imageFile: File): Uri? {
+    fun setCapturedImage(imageFile: File): Uri? {
+        val setImageInStorageTrace: Trace = FirebasePerformance.getInstance().newTrace("set_latest_image_in_storage")
+        setImageInStorageTrace.start()
+
         val latestImageUri = FileProvider.getUriForFile(
             context,
             "com.example.bachelorandroid.fileprovider",
             imageFile
         )
         updateLatestImageUri(latestImageUri)
+
+        setImageInStorageTrace.stop()
+
         return latestImageUri
     }
 
     fun getLatestImageUri(): Uri? {
+        val getImageFromStorageTrace: Trace = FirebasePerformance.getInstance().newTrace("get_latest_image_from_storage")
+        getImageFromStorageTrace.start()
+
         val sharedPreferences = context.getSharedPreferences("MyPhoto", Context.MODE_PRIVATE)
         val latestImageUriString = sharedPreferences.getString("latest_image_uri", null)
+        val latestImageUri = latestImageUriString?.let { Uri.parse(it) }
 
-        return latestImageUriString?.let { Uri.parse(it) }
+        getImageFromStorageTrace.stop()
+
+        return latestImageUri
     }
 
     private fun updateLatestImageUri(uri: Uri) {

@@ -31,7 +31,7 @@ class MicHelper(private val activity: FragmentActivity, private val mapView: Map
         )
         intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, Locale.GERMAN)
 
-        val microphoneActivationTrace: Trace = FirebasePerformance.getInstance().newTrace("microphone_activation")
+        val microphoneActivationTrace: Trace = FirebasePerformance.getInstance().newTrace("activate_microphone")
         microphoneActivationTrace.start()
 
         speechLauncher.launch(intent)
@@ -42,8 +42,7 @@ class MicHelper(private val activity: FragmentActivity, private val mapView: Map
     private val speechLauncher: ActivityResultLauncher<Intent> =
         activity.registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
             if (result.resultCode == AppCompatActivity.RESULT_OK && result.data != null) {
-                // In case of success, extract the data from the result intent.
-                val microphoneRecognitionTrace: Trace = FirebasePerformance.getInstance().newTrace("microphone_speechrecognition")
+                val microphoneRecognitionTrace: Trace = FirebasePerformance.getInstance().newTrace("check_microphone_recognition")
                 microphoneRecognitionTrace.start()
 
                 val data = result.data
@@ -52,23 +51,14 @@ class MicHelper(private val activity: FragmentActivity, private val mapView: Map
 
                 microphoneRecognitionTrace.stop()
 
-                // Remove previous marker
                 clickedMarker?.let {
                     it.infoWindow.close()
                     mapView.overlays.remove(it)
                 }
 
-                // Check if the result list is not null and not empty before accessing the first item.
                 if (!res.isNullOrEmpty()) {
                     activity.lifecycleScope.launch {
-                        // Add a new marker at the clicked position
-
-                        val apiCallTranscriptedLocationNameTrace = FirebasePerformance.getInstance().newTrace("call_openweather_api_via_transcripted_location_name");
-                        apiCallTranscriptedLocationNameTrace.start();
-
                         val current = DownloadUtil.getCurrentDataFromMic(activity, res[0])
-
-                        apiCallTranscriptedLocationNameTrace.stop();
 
                         if (current != null) {
                             val newMarker = Marker(mapView)
