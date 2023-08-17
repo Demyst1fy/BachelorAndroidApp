@@ -14,7 +14,7 @@ import com.google.firebase.perf.FirebasePerformance
 import com.google.firebase.perf.metrics.Trace
 
 object NotificationUtil {
-    const val CHANNEL_ID = "my_channel_01"
+    private const val CHANNEL_ID = "my_channel_01"
 
     fun registerNotificationChannel(context : Context) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
