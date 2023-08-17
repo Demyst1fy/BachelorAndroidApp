@@ -18,6 +18,9 @@ class CameraHelper(private val activity: FragmentActivity, private var fileHelpe
     private lateinit var photoFile: File
 
     fun launchCamera() {
+        val cameraActivationTrace: Trace = FirebasePerformance.getInstance().newTrace("activate_camera")
+        cameraActivationTrace.start()
+
         val takePictureIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
         photoFile = fileHelper.createImageFile()
 
@@ -26,11 +29,7 @@ class CameraHelper(private val activity: FragmentActivity, private var fileHelpe
             "com.example.bachelorandroid.fileprovider",
             photoFile
         )
-
         takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI)
-
-        val cameraActivationTrace: Trace = FirebasePerformance.getInstance().newTrace("activate_camera")
-        cameraActivationTrace.start()
 
         cameraLauncher.launch(takePictureIntent)
 

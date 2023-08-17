@@ -24,15 +24,15 @@ import java.util.Locale
 
 class MicHelper(private val activity: FragmentActivity, private val mapView: MapView, private var clickedMarker: Marker?) {
     fun launchMicrophone() {
+        val microphoneActivationTrace: Trace = FirebasePerformance.getInstance().newTrace("activate_microphone")
+        microphoneActivationTrace.start()
+
         val intent = Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH)
         intent.putExtra(
             RecognizerIntent.EXTRA_LANGUAGE_MODEL,
             RecognizerIntent.LANGUAGE_MODEL_FREE_FORM
         )
         intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, Locale.GERMAN)
-
-        val microphoneActivationTrace: Trace = FirebasePerformance.getInstance().newTrace("activate_microphone")
-        microphoneActivationTrace.start()
 
         speechLauncher.launch(intent)
 
