@@ -19,7 +19,7 @@ class PeriodicNotificationWorker(private val context : Context, params : WorkerP
         val longitude = inputData.getDouble("longitude", 0.0)
         val latitude = inputData.getDouble("latitude", 0.0)
 
-        val current = DownloadUtil.getCurrentDataFromLatLon(context, latitude, longitude)
+        val current = DownloadUtil.getWeatherDataFromLocationLatLon(context, latitude, longitude)
 
         NotificationUtil.createNotification(context, current)
 

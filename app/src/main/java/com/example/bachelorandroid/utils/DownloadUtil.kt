@@ -40,7 +40,7 @@ object DownloadUtil {
         }
     }
 
-    suspend fun getCurrentDataFromLatLon(context: Context, latitude : Double, longitude : Double) : LocationItem? {
+    suspend fun getWeatherDataFromLocationLatLon(context: Context, latitude : Double, longitude : Double) : LocationItem? {
         val apiCallLocationLatLonTrace = FirebasePerformance.getInstance().newTrace("call_openweather_api_via_location_latlon");
         apiCallLocationLatLonTrace.start();
 
@@ -85,7 +85,7 @@ object DownloadUtil {
         }
     }
 
-    suspend fun getCurrentDataFromMic(context: Context, locationFromMic : String) : LocationItem? {
+    suspend fun getWeatherDataFromLocationName(context: Context, locationFromMic : String) : LocationItem? {
         val apiCallLocationNameTrace = FirebasePerformance.getInstance().newTrace("call_openweather_api_via_location_name");
         apiCallLocationNameTrace.start();
 

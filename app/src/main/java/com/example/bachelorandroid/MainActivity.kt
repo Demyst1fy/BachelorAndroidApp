@@ -154,7 +154,7 @@ class MainActivity : AppCompatActivity(), LocationListener {
         newMarker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM)
 
         lifecycleScope.launch {
-            val current = DownloadUtil.getCurrentDataFromLatLon(this@MainActivity, geoPoint.latitude, geoPoint.longitude)
+            val current = DownloadUtil.getWeatherDataFromLocationLatLon(this@MainActivity, geoPoint.latitude, geoPoint.longitude)
 
             newMarker.infoWindow = CustomMarkerInfoWindow(R.layout.custom_marker_info_window, mapView, current, this@MainActivity)
 
@@ -316,7 +316,7 @@ class MainActivity : AppCompatActivity(), LocationListener {
                 lifecycleScope.launch {
                     // Add a new marker at the clicked position
 
-                    val current = DownloadUtil.getCurrentDataFromLatLon(
+                    val current = DownloadUtil.getWeatherDataFromLocationLatLon(
                         this@MainActivity,
                         clickedPosition.latitude,
                         clickedPosition.longitude

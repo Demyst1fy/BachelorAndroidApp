@@ -1,13 +1,10 @@
 package com.example.bachelorandroid.helpers
 
 import android.content.Intent
-import android.provider.MediaStore
 import android.speech.RecognizerIntent
-import android.widget.ImageView
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.FileProvider
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.lifecycleScope
 import com.example.bachelorandroid.R
@@ -19,7 +16,6 @@ import kotlinx.coroutines.launch
 import org.osmdroid.util.GeoPoint
 import org.osmdroid.views.MapView
 import org.osmdroid.views.overlay.Marker
-import java.io.File
 import java.util.Locale
 
 class MicHelper(private val activity: FragmentActivity, private val mapView: MapView, private var clickedMarker: Marker?) {
@@ -58,7 +54,7 @@ class MicHelper(private val activity: FragmentActivity, private val mapView: Map
 
                 if (!res.isNullOrEmpty()) {
                     activity.lifecycleScope.launch {
-                        val current = DownloadUtil.getCurrentDataFromMic(activity, res[0])
+                        val current = DownloadUtil.getWeatherDataFromLocationName(activity, res[0])
 
                         if (current != null) {
                             val newMarker = Marker(mapView)
