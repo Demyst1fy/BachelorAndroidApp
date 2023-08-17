@@ -3,7 +3,10 @@ package com.example.bachelorandroid.helpers
 import android.content.Context
 import android.net.Uri
 import android.os.Environment
+import android.widget.ImageView
 import androidx.core.content.FileProvider
+import com.bumptech.glide.Glide
+import com.bumptech.glide.request.RequestOptions
 import com.google.firebase.perf.FirebasePerformance
 import com.google.firebase.perf.metrics.Trace
 import java.io.File
@@ -30,7 +33,7 @@ class FileHelper(private val context: Context) {
         return latestImageUri
     }
 
-    fun getLatestImageUri(): Uri? {
+    fun getLatestImageUri(photoFromCamera: ImageView) {
         val getImageFromStorageTrace: Trace = FirebasePerformance.getInstance().newTrace("get_latest_image_from_storage")
         getImageFromStorageTrace.start()
 
@@ -38,9 +41,14 @@ class FileHelper(private val context: Context) {
         val latestImageUriString = sharedPreferences.getString("latest_image_uri", null)
         val latestImageUri = latestImageUriString?.let { Uri.parse(it) }
 
-        getImageFromStorageTrace.stop()
+        if (latestImageUri != null) {
+            Glide.with(context)
+                .load(latestImageUri)
+                .apply(RequestOptions.overrideOf(160, 120))
+                .into(photoFromCamera)
+        }
 
-        return latestImageUri
+        getImageFromStorageTrace.stop()
     }
 
     private fun updateLatestImageUri(uri: Uri) {

@@ -108,13 +108,7 @@ class MainActivity : AppCompatActivity(), LocationListener {
 
         // Load the latest image on app startup
 
-        val latestImageUri = fileHelper.getLatestImageUri()
-        if (latestImageUri != null) {
-            Glide.with(this)
-                .load(latestImageUri)
-                .apply(RequestOptions.overrideOf(160, 120))
-                .into(photoFromCamera)
-        }
+        fileHelper.getLatestImageUri(photoFromCamera)
 
         // Check location permission
         checkAndRequestLocationPermission()
