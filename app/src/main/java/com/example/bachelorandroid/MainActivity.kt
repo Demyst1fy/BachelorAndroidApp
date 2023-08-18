@@ -16,20 +16,14 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
-import androidx.work.Constraints
-import androidx.work.Data
-import androidx.work.ExistingPeriodicWorkPolicy
-import androidx.work.PeriodicWorkRequest
-import androidx.work.WorkManager
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.example.bachelorandroid.customs.CustomMarkerInfoWindow
 import com.example.bachelorandroid.helpers.CameraHelper
 import com.example.bachelorandroid.helpers.FileHelper
 import com.example.bachelorandroid.helpers.MicHelper
+import com.example.bachelorandroid.helpers.NotificationHelper
 import com.example.bachelorandroid.utils.DownloadUtil
-import com.example.bachelorandroid.utils.NotificationUtil
-import com.example.bachelorandroid.worker.PeriodicNotificationWorker
 import com.google.firebase.FirebaseApp
 import com.google.firebase.perf.FirebasePerformance
 import com.google.firebase.perf.metrics.Trace
@@ -39,7 +33,6 @@ import org.osmdroid.util.GeoPoint
 import org.osmdroid.views.MapView
 import org.osmdroid.views.overlay.Marker
 import org.osmdroid.views.overlay.Overlay
-import java.util.concurrent.TimeUnit
 
 class MainActivity : AppCompatActivity(), LocationListener {
     private lateinit var mapView: MapView
@@ -57,6 +50,7 @@ class MainActivity : AppCompatActivity(), LocationListener {
     private lateinit var fileHelper: FileHelper
     private lateinit var cameraHandler: CameraHelper
     private lateinit var micHelper: MicHelper
+    private lateinit var notificationHelper: NotificationHelper
 
     private var currentMarker: Marker? = null
     private var clickedMarker: Marker? = null
@@ -68,6 +62,7 @@ class MainActivity : AppCompatActivity(), LocationListener {
         const val MY_PERMISSIONS_REQUEST_LOCATION = 99
         const val MY_PERMISSIONS_REQUEST_CAMERA = 100
         const val MY_PERMISSIONS_REQUEST_MICROPHONE = 101
+        const val MY_PERMISSIONS_REQUEST_NOTIFICATIONS = 102
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -103,15 +98,19 @@ class MainActivity : AppCompatActivity(), LocationListener {
         cameraHandler = CameraHelper(this, fileHelper, photoFromCamera)
         micHelper = MicHelper(this, mapView, clickedMarker)
 
-        // Register Notification Channel
-        NotificationUtil.registerNotificationChannel(this)
-
         // Load the latest image on app startup
-
         fileHelper.getLatestImageUri(photoFromCamera)
 
         // Check location permission
         checkAndRequestLocationPermission()
+
+        // Set a click listener for the button to send push-notification.
+        val notifButton = findViewById<Button>(R.id.notifButton)
+        notifButton.setOnClickListener {
+            lifecycleScope.launch {
+                notificationHelper.createNotification()
+            }
+        }
 
         // Set a click listener for the button to start speech recognition.
         val micButton = findViewById<Button>(R.id.micButton)
@@ -178,34 +177,9 @@ class MainActivity : AppCompatActivity(), LocationListener {
             mapView.controller.setCenter(geoPoint)
             mapView.overlays.add(mapClickOverlay)
             mapView.invalidate()
+
+            notificationHelper = NotificationHelper(this@MainActivity, "My Channel 01", current)
         }
-
-        val data = Data.Builder()
-            .putDouble("longitude", geoPoint.longitude)
-            .putDouble("latitude", geoPoint.latitude)
-            .build()
-
-        val initializeWorkerTrace = FirebasePerformance.getInstance().newTrace("initialize_worker");
-        initializeWorkerTrace.start();
-
-        val workManager = WorkManager.getInstance(this)
-        val periodicReloadDataWorkRequest = PeriodicWorkRequest.Builder(
-            PeriodicNotificationWorker::class.java,
-            15, TimeUnit.MINUTES)
-            .setInputData(data)
-            .setInitialDelay(1, TimeUnit.HOURS)
-            .setConstraints(
-                Constraints.Builder()
-                    .setRequiresBatteryNotLow(true)
-                    .build())
-            .build()
-
-        workManager.enqueueUniquePeriodicWork(
-            periodicReloadDataWorkRequest::class.java.canonicalName ?: "",
-            ExistingPeriodicWorkPolicy.UPDATE,
-            periodicReloadDataWorkRequest)
-
-        initializeWorkerTrace.stop();
     }
 
     private fun checkAndRequestCameraPermission() {

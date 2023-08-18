@@ -28,7 +28,7 @@ class MicHelper(private val activity: FragmentActivity, private val mapView: Map
             RecognizerIntent.EXTRA_LANGUAGE_MODEL,
             RecognizerIntent.LANGUAGE_MODEL_FREE_FORM
         )
-        intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, Locale.GERMAN)
+        intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, Locale.GERMANY)
 
         speechLauncher.launch(intent)
 
