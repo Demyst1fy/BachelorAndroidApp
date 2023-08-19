@@ -49,10 +49,7 @@ class NotificationHelper(private val activity: FragmentActivity, channelName : S
             )
         }
 
-        val intent = Intent(
-            activity,
-            MainActivity::class.java
-        ) // Replace YourMainActivity with your actual main activity class
+        val intent = Intent(activity, MainActivity::class.java)
 
         val pendingIntent = PendingIntent.getActivity(
             activity,

@@ -2,7 +2,6 @@ package com.example.bachelorandroid.helpers
 
 import android.content.Context
 import android.net.Uri
-import android.os.Environment
 import android.widget.ImageView
 import androidx.core.content.FileProvider
 import com.bumptech.glide.Glide
@@ -12,12 +11,8 @@ import com.google.firebase.perf.metrics.Trace
 import java.io.File
 
 class FileHelper(private val context: Context) {
-    fun createImageFile(): File {
-        val storageDir: File? = context.getExternalFilesDir(Environment.DIRECTORY_PICTURES)
-        return File.createTempFile("image", ".jpg", storageDir)
-    }
 
-    fun setCapturedImage(imageFile: File): Uri? {
+    fun setLatestImage(imageFile: File): Uri? {
         val setImageInStorageTrace: Trace = FirebasePerformance.getInstance().newTrace("set_latest_image_in_storage")
         setImageInStorageTrace.start()
 
@@ -26,14 +21,17 @@ class FileHelper(private val context: Context) {
             "com.example.bachelorandroid.fileprovider",
             imageFile
         )
-        updateLatestImageUri(latestImageUri)
+        val sharedPreferences = context.getSharedPreferences("MyPhoto", Context.MODE_PRIVATE)
+        val editor = sharedPreferences.edit()
+        editor.putString("latest_image_uri", latestImageUri.toString())
+        editor.apply()
 
         setImageInStorageTrace.stop()
 
         return latestImageUri
     }
 
-    fun getLatestImageUri(photoFromCamera: ImageView) {
+    fun getLatestImage(photoFromCamera: ImageView) {
         val getImageFromStorageTrace: Trace = FirebasePerformance.getInstance().newTrace("get_latest_image_from_storage")
         getImageFromStorageTrace.start()
 
@@ -49,12 +47,5 @@ class FileHelper(private val context: Context) {
         }
 
         getImageFromStorageTrace.stop()
-    }
-
-    private fun updateLatestImageUri(uri: Uri) {
-        val sharedPreferences = context.getSharedPreferences("MyPhoto", Context.MODE_PRIVATE)
-        val editor = sharedPreferences.edit()
-        editor.putString("latest_image_uri", uri.toString())
-        editor.apply()
     }
 }

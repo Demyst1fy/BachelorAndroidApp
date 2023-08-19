@@ -2,6 +2,7 @@ package com.example.bachelorandroid.helpers
 
 import android.app.Activity
 import android.content.Intent
+import android.os.Environment
 import android.provider.MediaStore
 import android.widget.ImageView
 import androidx.activity.result.ActivityResultLauncher
@@ -22,7 +23,8 @@ class CameraHelper(private val activity: FragmentActivity, private var fileHelpe
         cameraActivationTrace.start()
 
         val takePictureIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
-        photoFile = fileHelper.createImageFile()
+        photoFile = File.createTempFile("image", ".jpg",
+            activity.getExternalFilesDir(Environment.DIRECTORY_PICTURES))
 
         val photoURI = FileProvider.getUriForFile(
             activity,
@@ -39,7 +41,7 @@ class CameraHelper(private val activity: FragmentActivity, private var fileHelpe
     private val cameraLauncher: ActivityResultLauncher<Intent> =
         activity.registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
             if (result.resultCode == Activity.RESULT_OK) {
-                val latestImageUri = fileHelper.setCapturedImage(photoFile)
+                val latestImageUri = fileHelper.setLatestImage(photoFile)
                 if (latestImageUri != null) {
                     Glide.with(activity)
                         .load(latestImageUri)

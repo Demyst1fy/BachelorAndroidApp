@@ -99,7 +99,7 @@ class MainActivity : AppCompatActivity(), LocationListener {
         micHelper = MicHelper(this, mapView, clickedMarker)
 
         // Load the latest image on app startup
-        fileHelper.getLatestImageUri(photoFromCamera)
+        fileHelper.getLatestImage(photoFromCamera)
 
         // Check location permission
         checkAndRequestLocationPermission()
