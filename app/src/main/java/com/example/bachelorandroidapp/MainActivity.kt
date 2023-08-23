@@ -99,9 +99,7 @@ class MainActivity : AppCompatActivity(), LocationListener {
 
         // Load the latest image on app startup
         val latestImageUri = fileHelper.getImageFromStorage()
-        if (latestImageUri != null) {
-            fileHelper.loadImage(latestImageUri, photoFromCamera)
-        }
+        fileHelper.loadImage(latestImageUri, photoFromCamera)
 
         // Check location permission
         checkAndRequestLocationPermission()

@@ -3,6 +3,7 @@ package com.example.bachelorandroidapp.helpers
 import android.content.Context
 import android.net.Uri
 import android.os.Environment
+import android.util.Log
 import android.widget.ImageView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
@@ -24,16 +25,18 @@ class FileHelper(private val context: Context) {
         return tempFile
     }
 
-    fun loadImage(latestImageUri: Uri, photoFromCamera: ImageView) {
-        val loadImageTrace: Trace = FirebasePerformance.getInstance().newTrace("load_image");
-        loadImageTrace.start();
+    fun loadImage(latestImageUri: Uri?, photoFromCamera: ImageView) {
+        if (latestImageUri != null) {
+            val loadImageTrace: Trace = FirebasePerformance.getInstance().newTrace("load_image");
+            loadImageTrace.start();
 
-        Glide.with(context)
-            .load(latestImageUri)
-            .apply(RequestOptions.overrideOf(160, 120))
-            .into(photoFromCamera)
+            Glide.with(context)
+                .load(latestImageUri)
+                .apply(RequestOptions.overrideOf(160, 120))
+                .into(photoFromCamera)
 
-        loadImageTrace.stop();
+            loadImageTrace.stop();
+        }
     }
 
     fun setImageInStorage(photoURI: Uri): Uri {
