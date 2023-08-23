@@ -6,11 +6,11 @@ plugins {
 }
 
 android {
-    namespace 'com.example.bachelorandroid'
+    namespace 'com.example.bachelorandroidapp'
     compileSdk 33
 
     defaultConfig {
-        applicationId "com.example.bachelorandroid"
+        applicationId "com.example.bachelorandroidapp"
         minSdk 24
         targetSdk 33
         versionCode 1

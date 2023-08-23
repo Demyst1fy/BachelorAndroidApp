@@ -1,12 +1,12 @@
-package com.example.bachelorandroid.customs
+package com.example.bachelorandroidapp.customs
 
 import android.content.Context
 import android.widget.ImageView
 import android.widget.TextView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
-import com.example.bachelorandroid.R
-import com.example.bachelorandroid.data.LocationItem
+import com.example.bachelorandroidapp.R
+import com.example.bachelorandroidapp.data.LocationItem
 import org.osmdroid.views.MapView
 import org.osmdroid.views.overlay.Marker
 import org.osmdroid.views.overlay.infowindow.InfoWindow

@@ -1,4 +1,4 @@
-package com.example.bachelorandroid.utils
+package com.example.bachelorandroidapp.utils
 
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory

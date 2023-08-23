@@ -1,4 +1,4 @@
-package com.example.bachelorandroid.helpers
+package com.example.bachelorandroidapp.helpers
 
 import android.content.Intent
 import android.speech.RecognizerIntent
@@ -7,9 +7,9 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.lifecycleScope
-import com.example.bachelorandroid.R
-import com.example.bachelorandroid.customs.CustomMarkerInfoWindow
-import com.example.bachelorandroid.utils.DownloadUtil
+import com.example.bachelorandroidapp.R
+import com.example.bachelorandroidapp.customs.CustomMarkerInfoWindow
+import com.example.bachelorandroidapp.utils.DownloadUtil
 import com.google.firebase.perf.FirebasePerformance
 import com.google.firebase.perf.metrics.Trace
 import kotlinx.coroutines.launch

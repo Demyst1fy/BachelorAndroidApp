@@ -1,4 +1,4 @@
-package com.example.bachelorandroid.helpers
+package com.example.bachelorandroidapp.helpers
 
 import android.app.NotificationChannel
 import android.app.NotificationManager
@@ -9,9 +9,9 @@ import android.os.Build
 import androidx.core.app.NotificationCompat
 import androidx.core.graphics.drawable.IconCompat
 import androidx.fragment.app.FragmentActivity
-import com.example.bachelorandroid.data.LocationItem
-import com.example.bachelorandroid.MainActivity
-import com.example.bachelorandroid.utils.ImageUtil
+import com.example.bachelorandroidapp.data.LocationItem
+import com.example.bachelorandroidapp.MainActivity
+import com.example.bachelorandroidapp.utils.ImageUtil
 import com.google.firebase.perf.FirebasePerformance
 import com.google.firebase.perf.metrics.Trace
 import kotlinx.coroutines.Dispatchers

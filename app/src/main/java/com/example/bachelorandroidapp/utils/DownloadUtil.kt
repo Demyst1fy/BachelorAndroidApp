@@ -1,10 +1,10 @@
-package com.example.bachelorandroid.utils
+package com.example.bachelorandroidapp.utils
 
 import android.content.Context
 import android.util.Log
-import com.example.bachelorandroid.data.LocationItem
-import com.example.bachelorandroid.MainActivity
-import com.example.bachelorandroid.R
+import com.example.bachelorandroidapp.data.LocationItem
+import com.example.bachelorandroidapp.MainActivity
+import com.example.bachelorandroidapp.R
 import com.google.firebase.perf.FirebasePerformance
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext

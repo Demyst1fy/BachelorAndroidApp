@@ -1,4 +1,4 @@
-package com.example.bachelorandroid
+package com.example.bachelorandroidapp
 
 import android.Manifest
 import android.content.Context
@@ -18,12 +18,12 @@ import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
-import com.example.bachelorandroid.customs.CustomMarkerInfoWindow
-import com.example.bachelorandroid.helpers.CameraHelper
-import com.example.bachelorandroid.helpers.FileHelper
-import com.example.bachelorandroid.helpers.MicHelper
-import com.example.bachelorandroid.helpers.NotificationHelper
-import com.example.bachelorandroid.utils.DownloadUtil
+import com.example.bachelorandroidapp.customs.CustomMarkerInfoWindow
+import com.example.bachelorandroidapp.helpers.CameraHelper
+import com.example.bachelorandroidapp.helpers.FileHelper
+import com.example.bachelorandroidapp.helpers.MicHelper
+import com.example.bachelorandroidapp.helpers.NotificationHelper
+import com.example.bachelorandroidapp.utils.DownloadUtil
 import com.google.firebase.FirebaseApp
 import com.google.firebase.perf.FirebasePerformance
 import com.google.firebase.perf.metrics.Trace
@@ -62,7 +62,6 @@ class MainActivity : AppCompatActivity(), LocationListener {
         const val MY_PERMISSIONS_REQUEST_LOCATION = 99
         const val MY_PERMISSIONS_REQUEST_CAMERA = 100
         const val MY_PERMISSIONS_REQUEST_MICROPHONE = 101
-        const val MY_PERMISSIONS_REQUEST_NOTIFICATIONS = 102
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -99,7 +98,10 @@ class MainActivity : AppCompatActivity(), LocationListener {
         micHelper = MicHelper(this, mapView, clickedMarker)
 
         // Load the latest image on app startup
-        fileHelper.getLatestImage(photoFromCamera)
+        val latestImageUri = fileHelper.getImageFromStorage()
+        if (latestImageUri != null) {
+            fileHelper.loadImage(latestImageUri, photoFromCamera)
+        }
 
         // Check location permission
         checkAndRequestLocationPermission()

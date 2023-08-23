@@ -29,7 +29,7 @@
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"
-        android:theme="@style/Theme.BachelorAndroid"
+        android:theme="@style/Theme.BachelorAndroidApp"
         tools:targetApi="31">
 
 
@@ -45,7 +45,7 @@
 
         <provider
             android:name="androidx.core.content.FileProvider"
-            android:authorities="com.example.bachelorandroid.fileprovider"
+            android:authorities="com.example.bachelorandroidapp.fileprovider"
             android:exported="false"
             android:grantUriPermissions="true">
             <meta-data
