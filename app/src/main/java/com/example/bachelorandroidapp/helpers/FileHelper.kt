@@ -20,7 +20,7 @@ class FileHelper(private val context: Context) {
         val storageDir: File? = context.getExternalFilesDir(Environment.DIRECTORY_PICTURES)
         val tempFile = File.createTempFile("image", ".jpg", storageDir)
 
-        createImageTrace.start()
+        createImageTrace.stop()
 
         return tempFile
     }
