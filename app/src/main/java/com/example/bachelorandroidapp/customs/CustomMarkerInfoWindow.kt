@@ -1,12 +1,16 @@
 package com.example.bachelorandroidapp.customs
 
 import android.content.Context
+import android.graphics.Bitmap
 import android.widget.ImageView
 import android.widget.TextView
-import com.bumptech.glide.Glide
-import com.bumptech.glide.request.RequestOptions
 import com.example.bachelorandroidapp.R
 import com.example.bachelorandroidapp.data.LocationItem
+import com.example.bachelorandroidapp.utils.ImageUtil
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import org.osmdroid.views.MapView
 import org.osmdroid.views.overlay.Marker
 import org.osmdroid.views.overlay.infowindow.InfoWindow
@@ -30,11 +34,17 @@ class CustomMarkerInfoWindow(layoutResId: Int, mapView: MapView, private val cli
             markerPressure?.text = context.getString(R.string.pressure, clickedData?.pressure)
             markerSubDescription?.text = clickedData?.weatherDescription
 
-            Glide.with(context)
-                .load("https://openweathermap.org/img/wn/" +
+            // Use a CoroutineScope to perform the image download
+            CoroutineScope(Dispatchers.IO).launch {
+                val image = ImageUtil.bitmapFromUrl("https://openweathermap.org/img/wn/" +
                         clickedData?.icon + ".png")
-                .apply(RequestOptions.overrideOf(70))
-                .into(markerIcon)
+
+                withContext(Dispatchers.Main) {
+                    // Update the UI on the main thread with the downloaded image
+                    val resizedBitmap = image?.let { Bitmap.createScaledBitmap(it, 70, 70, true) }
+                    markerIcon.setImageBitmap(resizedBitmap)
+                }
+            }
         }
     }
 

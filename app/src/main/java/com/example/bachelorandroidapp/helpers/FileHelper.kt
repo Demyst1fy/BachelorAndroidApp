@@ -1,69 +1,65 @@
 package com.example.bachelorandroidapp.helpers
 
 import android.content.Context
-import android.net.Uri
-import android.os.Environment
-import android.util.Log
+import android.graphics.Bitmap
 import android.widget.ImageView
-import com.bumptech.glide.Glide
-import com.bumptech.glide.request.RequestOptions
+import com.example.bachelorandroidapp.utils.TypeConverterUtil
 import com.google.firebase.perf.FirebasePerformance
 import com.google.firebase.perf.metrics.Trace
-import java.io.File
+
 
 class FileHelper(private val context: Context) {
 
-    fun createImage(): File {
+    private fun createImage(inputBitmap: Bitmap): String {
         val createImageTrace: Trace = FirebasePerformance.getInstance().newTrace("create_image")
         createImageTrace.start()
 
-        val storageDir: File? = context.getExternalFilesDir(Environment.DIRECTORY_PICTURES)
-        val tempFile = File.createTempFile("image", ".jpg", storageDir)
+        val outputBitmap = Bitmap.createScaledBitmap(inputBitmap, 240, 180, false)
+        val bitmapAsBase64 = TypeConverterUtil.bitmapToBase64(outputBitmap)
 
         createImageTrace.stop()
 
-        return tempFile
+        return bitmapAsBase64
     }
 
-    fun loadImage(latestImageUri: Uri?, photoFromCamera: ImageView) {
-        if (latestImageUri != null) {
+    fun loadImage(photoFromCamera: ImageView) {
+        val latestImageAsBase64 = getImageFromStorage();
+
+        if (latestImageAsBase64 != null) {
             val loadImageTrace: Trace = FirebasePerformance.getInstance().newTrace("load_image");
             loadImageTrace.start();
 
-            Glide.with(context)
-                .load(latestImageUri)
-                .apply(RequestOptions.overrideOf(160, 120))
-                .into(photoFromCamera)
+            val bitmap = TypeConverterUtil.base64ToBitmap(latestImageAsBase64)
+            photoFromCamera.setImageBitmap(bitmap)
 
             loadImageTrace.stop();
         }
     }
 
-    fun setImageInStorage(photoURI: Uri): Uri {
+    fun setImageInStorage(photoBitmap: Bitmap) {
+        val createdImageAsBase64 = createImage(photoBitmap)
+
         val setImageInStorageTrace: Trace = FirebasePerformance.getInstance().newTrace("set_latest_image_in_storage")
         setImageInStorageTrace.start()
 
         val sharedPreferences = context.getSharedPreferences("MyPhoto", Context.MODE_PRIVATE)
         val editor = sharedPreferences.edit()
-        editor.putString("latest_image", photoURI.toString())
+
+        editor.putString("latest_image", createdImageAsBase64)
         editor.apply()
 
         setImageInStorageTrace.stop()
-
-        return photoURI
     }
 
-    fun getImageFromStorage() : Uri? {
-        val getImageFromStorageTrace: Trace =
-            FirebasePerformance.getInstance().newTrace("get_latest_image_from_storage")
+    private fun getImageFromStorage(): String? {
+        val getImageFromStorageTrace: Trace = FirebasePerformance.getInstance().newTrace("get_latest_image_from_storage")
         getImageFromStorageTrace.start()
 
         val sharedPreferences = context.getSharedPreferences("MyPhoto", Context.MODE_PRIVATE)
-        val latestImageUriString = sharedPreferences.getString("latest_image", null)
-        val latestImageUri = latestImageUriString?.let { Uri.parse(it) }
+        val bitmapAsBase64 = sharedPreferences.getString("latest_image", null)
 
         getImageFromStorageTrace.stop()
 
-        return latestImageUri
+        return bitmapAsBase64
     }
 }

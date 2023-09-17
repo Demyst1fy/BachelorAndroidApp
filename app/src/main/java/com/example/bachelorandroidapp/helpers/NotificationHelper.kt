@@ -36,7 +36,7 @@ class NotificationHelper(private val activity: FragmentActivity, channelName : S
 
     suspend fun createNotification() {
         val pushNotificationTrace: Trace =
-            FirebasePerformance.getInstance().newTrace("create_push_notification")
+            FirebasePerformance.getInstance().newTrace("create_notification")
         pushNotificationTrace.start()
 
         val itemId = locationItem!!.id
@@ -55,7 +55,7 @@ class NotificationHelper(private val activity: FragmentActivity, channelName : S
             activity,
             0,
             intent,
-            PendingIntent.FLAG_UPDATE_CURRENT
+            PendingIntent.FLAG_MUTABLE
         )
 
         val notificationBuilder = NotificationCompat.Builder(activity, CHANNEL_ID)

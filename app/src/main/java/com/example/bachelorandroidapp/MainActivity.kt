@@ -3,6 +3,7 @@ package com.example.bachelorandroidapp
 import android.Manifest
 import android.content.Context
 import android.content.pm.PackageManager
+import android.graphics.Bitmap
 import android.location.Location
 import android.location.LocationListener
 import android.location.LocationManager
@@ -16,14 +17,13 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
-import com.bumptech.glide.Glide
-import com.bumptech.glide.request.RequestOptions
 import com.example.bachelorandroidapp.customs.CustomMarkerInfoWindow
 import com.example.bachelorandroidapp.helpers.CameraHelper
 import com.example.bachelorandroidapp.helpers.FileHelper
 import com.example.bachelorandroidapp.helpers.MicHelper
 import com.example.bachelorandroidapp.helpers.NotificationHelper
 import com.example.bachelorandroidapp.utils.DownloadUtil
+import com.example.bachelorandroidapp.utils.ImageUtil
 import com.google.firebase.FirebaseApp
 import com.google.firebase.perf.FirebasePerformance
 import com.google.firebase.perf.metrics.Trace
@@ -98,8 +98,7 @@ class MainActivity : AppCompatActivity(), LocationListener {
         micHelper = MicHelper(this, mapView, clickedMarker)
 
         // Load the latest image on app startup
-        val latestImageUri = fileHelper.getImageFromStorage()
-        fileHelper.loadImage(latestImageUri, photoFromCamera)
+        fileHelper.loadImage(photoFromCamera)
 
         // Check location permission
         checkAndRequestLocationPermission()
@@ -164,11 +163,11 @@ class MainActivity : AppCompatActivity(), LocationListener {
             locationPressure.text = getString(R.string.pressure, current?.pressure)
             locationSubDescription.text = current?.weatherDescription
 
-            Glide.with(this@MainActivity)
-                .load("https://openweathermap.org/img/wn/" +
-                        current?.icon + ".png")
-                .apply(RequestOptions.overrideOf(70))
-                .into(locationIcon)
+            val image = ImageUtil.bitmapFromUrl("https://openweathermap.org/img/wn/" +
+                    current?.icon + ".png")
+
+            val resizedBitmap = image?.let { Bitmap.createScaledBitmap(it, 70, 70, true) }
+            locationIcon.setImageBitmap(resizedBitmap)
 
             mapView.overlays.add(newMarker)
             currentMarker = newMarker
